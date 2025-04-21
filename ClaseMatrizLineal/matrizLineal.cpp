@@ -4,7 +4,7 @@ using namespace std;
 
 MatrizLineal::MatrizLineal(int _dx, int _dy) : dx{_dx}, dy{_dy} {
     vec = new int[dx * dy];   // vec es un atributo de la clase por eso puedo usarlo en cualquier función miemrbro - Matriz conceptual
-    int* end = vec + dx * dy; // el puntero end es una varibale LOCAL, por eso no podre usarla fuera de su ámbito
+    int* end = vec + dx * dy; // El puntero end es una varibale LOCAL, por eso no podre usarla fuera de su ámbito
     int j = 0;
     for (int* i = vec; i < end; i++, j++) {
         *i = 1 + j;
