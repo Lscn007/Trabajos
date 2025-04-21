@@ -23,13 +23,13 @@ void MatrizLineal::set(int x, int y, int v) {
     *(vec + (x * dy + y)) = v;
 }
 
-int& MatrizLineal::gs(int x, int y) { // Retornamos una referencia del valor (un segundo nombre)
-    return *(vec + (x * dy + y));
+int& MatrizLineal::gs(int x, int y) { 
+    return *(vec + (x * dy + y));      // Retorna una referencia(alias) al elemento en la posición (x, y)
 }
 
 int& MatrizLineal::operator()(int x, int y) {
-    return *(vec + (x * dy + y));
-}
+    return *(vec + (x * dy + y));      // Retorna una referencia(alias) al elemento en la posición (x, y)
+} 
 
 void MatrizLineal::printMatrizL() {
     int* begin = vec;
