@@ -1,0 +1,88 @@
+.macro swap(%a, %b)
+  lw $t9, (%a)
+  lw $t8, (%b)
+  sw $t8, (%a)
+  sw $t9, (%b)
+.end_macro
+
+.macro printArray(%beggin, %sizeArray)
+  addi $t0, %beggin, 0
+  addi $t1, %sizeArray, 0
+  li $t2, 0
+  while:
+    beq $t2, $t1, endwhile
+    add $t3, $t2, $t2  
+    add $t3, $t3, $t3  #Dependcia de tipo I 
+    addi $t2, $t2, 1
+    add $t4, $t0, $t3
+    lw $t5, 0($t4)
+    addi $a0, $t5, 0
+    li $v0, 1
+    syscall
+    la $a0, space
+    li $v0, 4
+    syscall
+    j while
+  endwhile:
+  la $a0, enter
+  li $v0, 4
+  syscall
+.end_macro
+
+.macro bubble(%beggin, %sizeArray)
+  addi $t0, %beggin, 0
+  addi $t1, %sizeArray, -1
+  addi $t2, $zero, 0   # Contador del bucle inicializado en 0
+  for:
+    beq $t1, $t2, endfor
+    add $t3, $t2, $t2
+    add $t3, $t3, $t3  # 4*(Contador) == word(4-bytes)
+    add $t3, $t3, $t0  # Puntero al índice (Contador) del array
+    addi $t4, $t3, 4   # Puntero al índice inmediato (Contador+1)
+    addi $t5, $t3, 0   # Guardar los punteros a los índices evaluados para...
+    addi $t6, $t4, 0   # ... hacer el swap, en caso array[contador] < array[contador+1]
+    lw $t3, 0($t3)     # Obtener los valores de tipo word...
+    lw $t4, 0($t4)     # ... de los punteros, grabar en los mismos
+    blt $t4, $t3, jump # Si array[contador] < array[contador+1] no es verdadero, no hace el swap 
+    swap($t5, $t6)
+    jump:
+    addi $t2, $t2, 1   # Contador++
+    j for
+  endfor:
+.end_macro
+
+.text
+.globl main
+main:
+  # Carga de punteros de variables en memoria
+  la $s0, lista    # Puntero a beggin del array
+  la $s1, size     # Puntero a variable size
+  lw $s1, 0($s1)   # Obtener tamaño del array
+  #Imprimir string1 y array antes del ordenamiento
+  la $a0, string1
+  li $v0, 4
+  syscall
+  printArray($s0, $s1)
+  addi $s2, $s1, 0 # Contador: Registro inicializado en sizeArray
+  while2:
+    beq $s2, $zero, endWhile2
+    bubble($s0, $s2)
+    addi $s2, $s2, -1 # Contador--
+    j while2
+  endWhile2:
+  # Imprimir string2 y array después del ordenamiento
+  la $a0, string2
+  li $v0, 4
+  syscall
+  printArray($s0, $s1)  
+  end:
+    li $v0, 10
+    syscall
+    
+.data
+  lista: .word 4, 7, 16, 1, 8, 12, 9, 5, 2, 10
+  size: .word 10
+  string1: .asciiz "Lista original:\n"
+  string2: .asciiz "Lista ordenada:\n"
+  enter: .asciiz "\n"
+  space: .asciiz " "
