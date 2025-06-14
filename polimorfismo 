@@ -1,0 +1,39 @@
+#include <iostream>
+using namespace std;
+class Figura{
+    public:
+    virtual float calcularArea(float a, float b) = 0;  
+};
+class rectangulo:public Figura{
+    public:
+    float calcularArea(float base, float altura) override{
+        return base*altura;
+    }
+};
+class triangulo:public Figura{
+    public:
+    float calcularArea(float base, float altura) override{
+        return (base*altura)/2;
+    }
+};
+class cuadrado:public Figura{
+    public:
+    float calcularArea(float base, float zero) override{
+        return (base*base);
+    }
+};
+int main()
+{
+    rectangulo rec;
+    triangulo tri;
+    cuadrado cua;
+    Figura* figuras[3]={&rec, &tri, &cua};
+    float datos[3][2] = { {5, 3}, {6, 2}, {4, 0} };
+    float* i=*datos;
+    for(Figura** ptr=figuras;ptr<figuras+3;ptr++)
+    {
+        cout<<"El resultado del area es: "<<(*ptr)->calcularArea(*i, *(i+1));
+        i+=2;
+    }
+    return 0;
+}
